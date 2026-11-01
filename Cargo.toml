@@ -1,0 +1,60 @@
+[workspace]
+resolver = "3"
+members = [
+    # Core substrate: GAIA-MLX-QUANT + p/q ternary kernels
+    "alexiai/rust/gaia-mlx-quant",
+    "alexiai/rust/alexiai",
+
+    # AURORA: sovereign AI with MEM|8, balanced ternary, p/q arithmetic
+    "aurora/crates/aurora-core",
+    "aurora/crates/aurora-mem8",
+    "aurora/crates/aurora-phoenix",
+    "aurora/crates/aurora-dyad",
+    "aurora/crates/aurora-dharma-quantum",
+    "aurora/crates/aurora-infer",
+    "aurora/crates/aurora-voice-shell",
+    "aurora/crates/aurora-cli",
+
+    # MLX-QUANT: bare-metal Apple Silicon tensor quantization
+    "mlx-quant/mlx-quant-linux",
+
+    # MEMNET: semantic routing, Ayevn wave tokens, SoulSignatures
+    "memnet",
+
+    # aurora-8b-pq: ternary audio encoder-decoder (Python, Rust inference in deploy/)
+]
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
+panic = "abort"
+
+[workspace.dependencies]
+# Shared p/q rational arithmetic (q = 2^20 = 1_048_576)
+# This is the fundamental substrate constant across all projects
+kernel-pq-q = { version = "1", path = "alexiai/rust/gaia-mlx-quant" }
+
+# TernarySpin: Entropy(-1), Stillness(0), Resonance(+1) - the unified spine
+ternary-spin = { version = "1", path = "aurora/crates/aurora-core" }
+
+# Ayevn wave tokens for semantic routing
+ayevn-tokens = { version = "1", path = "memnet/src" }
+
+# Sovereign loopback guard - enforced across all network surfaces
+sovereign-guard = { version = "1", path = "alexiai/rust/alexiai/src/sovereign.rs" }
+
+# MEM|8 cylindrical wave memory
+mem8 = { version = "1", path = "aurora/crates/aurora-mem8" }
+
+# Zero-cost abstractions for integer-only SIMD
+int-simd = { version = "1", path = "alexiai/rust/gaia-mlx-quant/src/kernel.rs" }
+
+# Python bindings via pyo3 (for aurora-8b-pq Rust inference)
+pyo3 = { version = "0.22", features = ["extension-module", "abi3-py38"] }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unused = "warn"
+clippy::unwrap_used = "warn"
+clippy::expect_used = "warn"
